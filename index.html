@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="manifest" href="./manifest.json">
     
-    <link rel="apple-touch-icon" href="/images/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-status-bar" content="#29343a">
     <meta name="theme-color" content="#29343a">
 
@@ -106,7 +106,7 @@
       (async () => {
         if ('serviceWorker' in navigator) {
           try {
-            const serviceWorker = await navigator.serviceWorker.register('/sw.js');
+            const serviceWorker = await navigator.serviceWorker.register('./sw.js');
             console.log('serviceWorker registered', serviceWorker);
           } catch (e) {
             console.warn(e);
