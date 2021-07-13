@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Traffic Light</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="manifest" href="./manifest.json">
+    
+    <link rel="apple-touch-icon" href="/images/icons/icon-192x192.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#29343a">
+    <meta name="theme-color" content="#29343a">
+
+    <style>
+      html, body {
+        background-color: #29343a;
+        margin: 0;
+        padding: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        height: 100vh;
+        color: rgb(168, 168, 168);
+      }
+      input {
+        width: 2rem;
+        background-color: rgb(189, 189, 189);
+        border: none;
+        text-align: center;
+      }
+      button {
+        border: none;
+        background-color: rgb(189, 189, 189);
+      }
+      button:focus, input:focus {
+        outline: none;
+      }
+
+      svg {
+        height: 100%;
+        width: 100%;
+      }
+      .red {
+        fill: red;
+      }
+      .green {
+        fill: #2eeb0c;
+      }
+    </style>
+  </head>
+  <body>  
+    <div class="container">
+      <div><label for="second">Change every </label><input type="number" id="second" value="10" min="1"> seconds. </div>
+      <div>Current Mode: <button id="stop">Autochange</button></div>
+      
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <circle id="circleRed" class="red" data-name="Ellipse 1" cx="50%" cy="25%" r="25%" fill="#903838"/>
+          <circle id="circleGreen" data-name="Ellipse 2" cx="50%" cy="75%" r="25%" fill="#092500"/>
+        </svg>
+    </div>
+    <script>
+      const secondInput = document.getElementById('second')
+      const stopButton = document.getElementById('stop')
+      const circleRed = document.getElementById('circleRed')
+      const circleGreen = document.getElementById('circleGreen');
+      let currentState = true;
+      let intervalSubscription = null;
+      let isStop = false;
+
+      toggleLights()
+      secondInput.onchange = () => toggleLights()
+      stopButton.onclick = () => {
+        isStop = !isStop; 
+        if (isStop) {
+          stopButton.innerText = 'Stopped';
+          toggleLights();
+        } else {
+          stopButton.innerText = 'Autochange';
+          toggleLights();
+        }
+      }
+
+      function toggleLights() {
+        if (intervalSubscription) clearInterval(intervalSubscription);
+        if (isStop) return;
+        intervalSubscription = setInterval(() => {
+          if (currentState){
+            circleRed.classList.add('red');
+            circleGreen.classList.remove('green');
+          } else {
+            circleRed.classList.remove('red');
+            circleGreen.classList.add('green');
+          }
+          currentState = !currentState;
+        }, (secondInput.value || 10) * 1000);
+      }
+      
+      (async () => {
+        if ('serviceWorker' in navigator) {
+          try {
+            const serviceWorker = await navigator.serviceWorker.register('/sw.js');
+            console.log('serviceWorker registered', serviceWorker);
+          } catch (e) {
+            console.warn(e);
+          }
+        }
+      })()
+    </script>
+  </body>
+</html>
